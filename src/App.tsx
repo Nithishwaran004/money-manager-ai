@@ -731,9 +731,9 @@ export default function App() {
   // If locked, render premium fintech code pad screen
   if (isLocked && securityPin) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-0 sm:p-4 font-sans select-none antialiased">
+      <div className="min-h-screen bg-slate-950 sm:flex sm:items-center sm:justify-center p-0 sm:p-4 font-sans select-none antialiased">
         {/* Sleek Device Mock Shell on Desktop */}
-        <div className="w-full max-w-sm sm:max-w-md sm:h-[820px] h-[100dvh] bg-slate-950 sm:rounded-[44px] sm:border-[8px] sm:border-slate-800 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative">
+        <div className="w-full sm:max-w-md sm:h-[820px] h-[100dvh] bg-slate-950 sm:rounded-[44px] sm:border-[8px] sm:border-slate-800 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative">
           
           {/* Top simulated status header */}
           <div className="px-6 pt-4 pb-2 flex justify-between items-center text-[11px] font-bold text-slate-400 select-none bg-slate-950">
@@ -821,10 +821,10 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-black p-0 sm:p-6 sm:pb-12 text-slate-100 font-sans selection:bg-emerald-500/30 selection:text-emerald-300 select-none antialiased flex items-center justify-center">
+    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-black p-0 sm:p-6 sm:pb-12 text-slate-100 font-sans selection:bg-emerald-500/30 selection:text-emerald-300 select-none antialiased sm:flex sm:items-center sm:justify-center">
       
       {/* Sleek Device Mock Shell on Desktop */}
-      <div className="w-full max-w-sm sm:max-w-md sm:h-[820px] h-[100dvh] bg-slate-950 sm:rounded-[44px] sm:border-[8px] sm:border-slate-800 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative">
+      <div className="w-full sm:max-w-md sm:h-[820px] h-[100dvh] bg-slate-950 sm:rounded-[44px] sm:border-[8px] sm:border-slate-800 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative">
         
         {/* Dynamic Island bar */}
         <div className="hidden sm:block absolute top-2 left-1/2 -translate-x-1/2 w-28 h-6 bg-black rounded-full z-50 flex items-center justify-center">
