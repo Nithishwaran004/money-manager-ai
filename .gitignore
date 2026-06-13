@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+build/
+dist/
+out/
+
+# Testing
+coverage/
+.nyc_output/
+
+# Environment variables
+.env
+.env.local
+.env.production
+.env.test
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cache
+.cache/
+.parcel-cache/
+.eslintcache
+
+# Capacitor (optional - comment out if you want to commit platform code)
+# android/
+# ios/
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
+server.js

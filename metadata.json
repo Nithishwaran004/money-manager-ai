@@ -1,0 +1,6 @@
+{
+  "name": "Money Manager",
+  "description": "An AI-powered personal finance assistant with visual analytics, accounts, and clean transaction tracking via voice or touch.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
