@@ -150,8 +150,6 @@ export default function App() {
   // Unified speech service for offline Android speech recognition
   const [currentTranscript, setCurrentTranscript] = useState<string>("");
 
-  // Visual notify toasts
-  const [toastMsg, setToastMsg] = useState<string | null>(null);
   const strings = UI_STRINGS[lang];
   const recognitionRef = useRef<any>(null);
 
@@ -204,7 +202,6 @@ export default function App() {
       const available = await speechService.isAvailable();
       if (!available) {
         setSpeechNotSupported(true);
-        showToast("⚠️ Speech recognition not supported on this device.");
       } else {
         // Set to auto mode for multi-language support (English + Tamil + Tanglish)
         speechService.setLanguage('auto');
@@ -214,14 +211,12 @@ export default function App() {
           onStart: () => {
             console.log("🎤 Speech recognition started");
             setIsListening(true);
-            showToast("🎤 Listening... Speak in English or Tamil!");
           },
           onResult: (result) => {
             console.log("📝 Speech result:", result.transcript);
             setCurrentTranscript(result.transcript);
             if (result.isFinal) {
               setChatInput(result.transcript);
-              showToast(`Heard: "${result.transcript}"`);
               setTimeout(() => {
                 handleSendChatMessage(result.transcript);
               }, 500);
@@ -234,7 +229,6 @@ export default function App() {
           onError: (error) => {
             console.error("❌ Speech recognition error:", error);
             setIsListening(false);
-            showToast(`Speech error: ${error}`);
           }
         });
       }
@@ -249,7 +243,6 @@ export default function App() {
 
   const toggleListening = async () => {
     if (speechNotSupported) {
-      showToast("Speech recognition not supported. Please type instead!");
       return;
     }
 
@@ -267,18 +260,10 @@ export default function App() {
         await speechService.startListening();
       } catch (error: any) {
         console.error("Failed to start speech recognition:", error);
-        showToast(`Speech recognition error: ${error.message || "Unknown error"}`);
       }
     }
   };
 
-
-  const showToast = (msg: string) => {
-    setToastMsg(msg);
-    setTimeout(() => {
-      setToastMsg(null);
-    }, 3500);
-  };
 
   // Switch month navigation
   const handlePrevMonth = () => {
@@ -373,7 +358,6 @@ export default function App() {
 
       setTransactions((prev) => prev.map((t) => (t.id === editingTransaction.id ? updatedTx : t)));
       processLedgerEffects(txType, amountNum, txAccount, txType === "transfer" ? txToAccount : undefined);
-      showToast("Ledger record updated gracefully!");
     } else {
       const newTx: Transaction = {
         id: "tx-" + Date.now(),
@@ -389,7 +373,6 @@ export default function App() {
 
       setTransactions((prev) => [newTx, ...prev]);
       processLedgerEffects(txType, amountNum, txAccount, txType === "transfer" ? txToAccount : undefined);
-      showToast("Transaction synced on Ledger!");
     }
 
     setShowAddTxSheet(false);
@@ -423,7 +406,6 @@ export default function App() {
     if (confirm("Delete this transaction entry from local ledger? This will instantly reverse matching sub-wallet balances.")) {
       processLedgerEffects(tx.type, tx.amount, tx.account, tx.toAccount, true);
       setTransactions((prev) => prev.filter((t) => t.id !== tx.id));
-      showToast("Transaction dismissed and balanced.");
     }
   };
 
@@ -508,7 +490,6 @@ export default function App() {
   const handleConfirmAISpend = (preview: any) => {
     const amountVal = parseFloat(preview.amount);
     if (isNaN(amountVal) || amountVal <= 0) {
-      showToast("Cannot record empty sized transactions.");
       return;
     }
 
@@ -534,7 +515,6 @@ export default function App() {
         text: `✓ Confirmed! Added a ${strings[preview.type]} of ₹${amountVal} for '${newTx.category}' from account '${newTx.account}'.`,
       },
     ]);
-    showToast("AI proposal logged on ledger with Double-Entry updates!");
   };
 
   // Add and update sub account wallets
@@ -547,7 +527,6 @@ export default function App() {
       setAccounts((prev) =>
         prev.map((a) => (a.id === editingAccount.id ? { ...a, name: accName, type: accType, balance: balanceNum } : a))
       );
-      showToast("Wallet values customized.");
     } else {
       const newAcc: Account = {
         id: "acc-" + Date.now(),
@@ -556,7 +535,6 @@ export default function App() {
         balance: balanceNum,
       };
       setAccounts((prev) => [...prev, newAcc]);
-      showToast("New Wallet registered.");
     }
 
     setShowAddAccountSheet(false);
@@ -572,7 +550,6 @@ export default function App() {
     }
     if (confirm(`Delete '${acc.name}'? Existing balanced ledger transactions associated with this account may show mismatch.`)) {
       setAccounts((prev) => prev.filter((a) => a.id !== acc.id));
-      showToast("Account wallet removed.");
     }
   };
 
@@ -595,7 +572,6 @@ export default function App() {
     setCategories((prev) => [...prev, newCat]);
     setShowAddCategorySheet(false);
     setCatName("");
-    showToast("Saved customized category label!");
   };
 
   // Advanced data filter sets
@@ -656,7 +632,6 @@ export default function App() {
       setIsLocked(false);
       setPinErrorMsg(null);
       setPinInput("");
-      showToast("Access authorized. Welcome back!");
     } else {
       setPinErrorMsg(strings.pinError);
       setPinInput("");
@@ -667,11 +642,9 @@ export default function App() {
     if (!newPin.trim()) {
       localStorage.removeItem("mm_security_pin");
       setSecurityPin(null);
-      showToast("Passcode locks disabled.");
     } else {
       localStorage.setItem("mm_security_pin", newPin);
       setSecurityPin(newPin);
-      showToast(strings.lockSuccess);
     }
   };
 
@@ -694,13 +667,11 @@ export default function App() {
     link.click();
     document.body.removeChild(link);
 
-    showToast(strings.csvDownloaded);
   };
 
   // print audit reports
   const handlePrintPDF = () => {
     window.print();
-    showToast(strings.pdfGenerated);
   };
 
   const handleResetAppLoad = () => {
@@ -714,7 +685,6 @@ export default function App() {
       setCategories(DEFAULT_CATEGORIES);
       setSecurityPin(null);
       setIsLocked(false);
-      showToast("Databases reset.");
     }
   };
 
@@ -822,7 +792,6 @@ export default function App() {
                             setIsLocked(false);
                             setPinErrorMsg(null);
                             setPinInput("");
-                            showToast("Access authorized. Welcome back!");
                           } else if (updated.length === 4) {
                             setTimeout(() => {
                               if (updated !== securityPin) {
@@ -854,21 +823,6 @@ export default function App() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-black p-0 sm:p-6 sm:pb-12 text-slate-100 font-sans selection:bg-emerald-500/30 selection:text-emerald-300 select-none antialiased flex items-center justify-center">
       
-      {/* Toast Alert overlay */}
-      <AnimatePresence>
-        {toastMsg && (
-          <motion.div
-            initial={{ opacity: 0, y: -20, x: "-50%" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-6 left-1/2 -translate-x-1/2 z-[100] bg-slate-900/95 border border-emerald-500/30 text-white px-4 py-3 rounded-2xl text-xs font-semibold shadow-[0_12px_36px_rgba(0,0,0,0.5)] flex items-center gap-2 max-w-xs backdrop-blur-md"
-          >
-            <CheckCircle2 size={16} className="text-emerald-400 flex-shrink-0" />
-            <span>{toastMsg}</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Sleek Device Mock Shell on Desktop */}
       <div className="w-full max-w-sm sm:max-w-md sm:h-[820px] h-[100dvh] bg-slate-950 sm:rounded-[44px] sm:border-[8px] sm:border-slate-800 shadow-[0_24px_80px_rgba(0,0,0,0.85)] flex flex-col justify-between overflow-hidden relative">
         
@@ -913,7 +867,6 @@ export default function App() {
                   <button
                     onClick={() => {
                       setLang((prev) => (prev === "en" ? "ta" : "en"));
-                      showToast(lang === "en" ? "தமிழ் மொழி மாற்றப்பட்டது" : "Language switched to English");
                     }}
                     className="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 transition-all text-xs font-bold leading-none"
                     title="Switch language"
@@ -923,7 +876,6 @@ export default function App() {
                   <button
                     onClick={() => {
                       setActiveTab("Settings");
-                      showToast("Opened Settings options!");
                     }}
                     className="w-8 h-8 rounded-full flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-800 active:scale-95 transition-all text-xs"
                   >
@@ -1020,7 +972,6 @@ export default function App() {
                   type="button"
                   onClick={() => {
                     setActiveTab("Chat");
-                    showToast("Moneysense Voice NLP Chatbot opened!");
                   }}
                   className="bg-slate-900 hover:bg-slate-855 active:bg-slate-800 border border-slate-800 p-3 rounded-2xl flex flex-col items-center gap-1.5 transition-all text-xs cursor-pointer text-slate-300 hover:text-white"
                 >
@@ -1194,7 +1145,6 @@ export default function App() {
                     key={v}
                     onClick={() => {
                       setTimeFilter(v);
-                      showToast(`Switched view to ${v}`);
                     }}
                     className={`flex-1 py-1.5 px-1 rounded-xl text-[10px] font-bold transition-all cursor-pointer ${
                       timeFilter === v
@@ -1261,7 +1211,6 @@ export default function App() {
                     onSelectDate={(dateStr) => {
                       setSelectedDate(dateStr);
                       setTimeFilter("Daily");
-                      showToast(`Displaying entries for ${dateStr}`);
                     }}
                   />
                 </div>
@@ -1608,15 +1557,19 @@ export default function App() {
                 {/* Scroll anchor */}
                 <div ref={chatBottomRef} />
               </div>
+            </div>
+          )}
 
-              {/* Bottom typing and speech active container */}
-              <div className="p-3 border-t border-slate-900 bg-slate-950/90 absolute bottom-12 inset-x-0 space-y-2 z-10 pb-5">
+          {/* Chat input - only visible in AI Assist tab */}
+          {activeTab === "Chat" && (
+            <div className="absolute bottom-14 inset-x-0 px-3 z-30">
+              <div className="p-3 bg-slate-950/95 border border-slate-900/80 backdrop-blur-md rounded-2xl space-y-2">
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
                     handleSendChatMessage();
                   }}
-                  className="flex items-center gap-2.0"
+                  className="flex items-center gap-2"
                 >
                   <button
                     type="button"
@@ -1854,7 +1807,7 @@ export default function App() {
 
                   <button
                     onClick={() => {
-                      showToast(strings.backupSuccess);
+                      handleExportCSV();
                     }}
                     className="w-full bg-slate-950 border border-slate-850 hover:border-slate-700 py-2.5 px-4 rounded-2xl text-[10.5px] font-bold text-slate-300 text-left flex items-center justify-between cursor-pointer active:scale-98"
                   >
@@ -1884,7 +1837,6 @@ export default function App() {
           <button
             onClick={() => {
               setActiveTab("Home");
-              showToast("Fintech Dashboard loaded!");
             }}
             className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all cursor-pointer min-w-[55px] ${
               activeTab === "Home" ? "text-emerald-400 scale-105" : "text-slate-500 hover:text-slate-300"
@@ -1897,7 +1849,6 @@ export default function App() {
           <button
             onClick={() => {
               setActiveTab("Transactions");
-              showToast("Displaying Ledger records");
             }}
             className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all cursor-pointer min-w-[55px] ${
               activeTab === "Transactions" ? "text-emerald-400 scale-105" : "text-slate-500 hover:text-slate-300"
@@ -1925,7 +1876,6 @@ export default function App() {
           <button
             onClick={() => {
               setActiveTab("Stats");
-              showToast("Loading charts & analytics...");
             }}
             className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all cursor-pointer min-w-[55px] ${
               activeTab === "Stats" ? "text-emerald-400 scale-105" : "text-slate-500 hover:text-slate-300"
@@ -1938,7 +1888,6 @@ export default function App() {
           <button
             onClick={() => {
               setActiveTab("Chat");
-              showToast("Voice NLP chatbot online!");
             }}
             className={`flex flex-col items-center justify-center py-1.5 px-3 rounded-2xl transition-all cursor-pointer min-w-[55px] ${
               activeTab === "Chat" ? "text-emerald-400 scale-105" : "text-slate-500 hover:text-slate-300"

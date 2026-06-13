@@ -223,9 +223,9 @@ function tryLocalParseAndQuery(
 
     let answerText = "";
     if (locale === "ta") {
-      answerText = `ஒப்புதல் தேவை: ₹${amountFloat} தொகையை '${foundCategory}' பிரிவில், '${foundAccount}' கணக்கிலிருந்து சேமிக்கவா? 🤖 *உள்ளூர் பாகுபடுத்தி (Fallback Mode)*`;
+      answerText = `இந்த ₹${amountFloat} தொகையை '${foundCategory}' பிரிவில், '${foundAccount}' கணக்கிலிருந்து இப்படிப் பதிவு செய்யலாமா?`;
     } else {
-      answerText = `Local offline parser logged ₹${amountFloat} for '${foundCategory}' using account '${foundAccount}'. Click confirm below to log on double-entry ledger!`;
+      answerText = `Can I record ₹${amountFloat} for '${foundCategory}' from '${foundAccount}' like this?`;
     }
 
     return {
